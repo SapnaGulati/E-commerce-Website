@@ -12,7 +12,9 @@
     </div>
     <div class="col my-4">
         <h2>Step 2 - Enter Address & Other Details:</h2>
-        <form class="row g-3">
+        <form class="row g-3" method="POST" action="/shop/checkout">
+          {% csrf_token %}
+          <input type="hidden" name="itemsJson" id="itemsJson">
             <div class="col-md-6">
               <label for="validationDefault01" class="form-label">First name</label>
               <input type="text" class="form-control" id="validationDefault01" value="First Name" required>
