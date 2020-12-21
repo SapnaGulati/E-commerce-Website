@@ -1,98 +1,61 @@
-{% extends 'shop/basic.html' %}
-
-{% block title %} My Dream Cart Tracker {% endblock %}
+{% extends 'shop/basic.html' %} {% block title %} My Dream Cart Tracker {%endblock %} 
 {% block body %}
 <div class="container">
     <div class="col my-4">
-        <h2>My Dream Cart Checkout - Enter your Order Id and Email address to Track your order</h2>
-
+        <h2>Enter your Order Id and Email address to Track your order</h2>
     </div>
-    <div class="col my-4">
-        <h2>Step 2 - Enter Address & Other Details:</h2>
-        <div class="my-4">
-            <ul class="list-group" id="items">
-            </ul>
+    <form class="row g-3" method="POST" action="/shop/tracker/">
+        {% csrf_token %}
+        <div class="col-md-6">
+            <label for="validationDefault01" class="form-label">Order Id</label>
+            <input type="text" class="form-control" id="orderId" name="orderId" placeholder="Order Id" required />
         </div>
-        <form class="row g-3" method="POST" action="/shop/tracker/">
-          {% csrf_token %}
-          <input type="hidden" name="itemsJson" id="itemsJson">
-            <div class="col-md-6">
-              <label for="validationDefault01" class="form-label">First name</label>
-              <input type="text" class="form-control" id="fname" name="fname" value="First Name" required>
-            </div>
-            <div class="col-md-6">
-              <label for="validationDefault02" class="form-label">Last name</label>
-              <input type="text" class="form-control" id="lname" name="lname" value="Last Name" required>
-            </div>
-            <div class="col-md-8">
-              <label for="validationDefaultUsername" class="form-label">Email Address</label>
-              <div class="input-group">
+        <div class="col-md-6">
+            <label for="validationDefaultUsername" class="form-label">Email Address</label>
+            <div class="input-group">
                 <span class="input-group-text" id="inputGroupPrepend2">@</span>
-                <input type="email" class="form-control" id="email" name="email" aria-describedby="inputGroupPrepend2" required>
-              </div>
+                <input type="email" class="form-control" id="email" name="email" aria-describedby="inputGroupPrepend2"
+                    required />
             </div>
-            <div class="col-4">
-                <label for="validationDefault06" class="form-label">Phone Number</label>
-                <input type="tel" class="form-control" id="phone" name="phone" required>
-            </div>
-            <div class="col-12">
-                <label for="validationDefault07" class="form-label">Address</label>
-                <input type="text" class="form-control" id="address" name="address" required>
-            </div>
-            <div class="col-md-6">
-              <label for="validationDefault03" class="form-label">City</label>
-              <input type="text" class="form-control" id="city" name="city" required>
-            </div>
-            <div class="col-md-3">
-              <label for="validationDefault04" class="form-label">State</label>
-              <input type="text" class="form-control" id="state" name="state" required>
-            </div>
-            <div class="col-md-3">
-              <label for="validationDefault05" class="form-label">Zip</label>
-              <input type="text" class="form-control" id="zip_code" name="zip_code" required>
-            </div>
-            <div class="col-12">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="invalidCheck2" required>
-                <label class="form-check-label" for="invalidCheck2">
-                  Agree to terms and conditions
-                </label>
-              </div>
-            </div>
-            <div class="col-12">
-              <button class="btn btn-primary" type="submit">Place Order</button>
-            </div>
-          </form>
+        </div>
+        <div class="col-12 mt-3">
+            <button class="btn btn-primary" type="submit">Track Order</button>
+        </div>
+    </form>
+
+    <div class="col my-4">
+        <h2>Your Order Status:</h2>
+        <div class="my-4">
+            <ul class="list-group" id="items"></ul>
+        </div>
     </div>
 </div>
-{% endblock %}
-
-{% block js %}
-  <script>
+{% endblock %} {% block js %}
+<script>
     if (localStorage.getItem('cart') == null) {
-      var cart = {};
+        var cart = {};
     }
     else {
-      cart = JSON.parse(localStorage.getItem('cart'));
+        cart = JSON.parse(localStorage.getItem('cart'));
     }
     console.log(cart);
     var sum = 0;
-    if ($.isEmptyObject(cart)){
-      // if object is empty
-      mystr = '<p>Your cart is empty, please add some items to your cart before checking out!</p>'
-      $('#items').append(mystr);
+    if ($.isEmptyObject(cart)) {
+        // if object is empty
+        mystr = '<p>Your cart is empty, please add some items to your cart before checking out!</p>'
+        $('#items').append(mystr);
     }
-    else{
-      for(item in cart){
-        let name = cart[item][1];
-        let qty = cart[item][0];
-        sum = sum + qty;
-        mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
-          ${name}
-          <span class="badge bg-primary rounded-pill">${qty}</span>
-          </li>`
-          $('#items').append(mystr);
-      }
+    else {
+        for (item in cart) {
+            let name = cart[item][1];
+            let qty = cart[item][0];
+            sum = sum + qty;
+            mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+        ${name}
+        <span class="badge bg-primary rounded-pill">${qty}</span>
+        </li>`
+            $('#items').append(mystr);
+        }
     }
     document.getElementById('cart').innerHTML = sum;
     $('#itemsJson').val(JSON.stringify(cart));
@@ -101,5 +64,5 @@
     localStorage.clear();
     document.location = "/shop";
     {% endif %}
-  </script>
+</script>
 {% endblock %}

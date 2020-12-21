@@ -29,6 +29,15 @@ def contact(request):
     return render(request, 'shop/contact.html')
 
 def tracker(request):
+    if request.method=="POST":
+        orderId = request.POST.get('orderId', '')
+        email = request.POST.get('email', '')
+        try:
+            order = Orders.objects.filter(order_id=orderId, email=email)
+            if len(order)>0:
+                update = OrderUpdate.objects.filter(order_id=orderId)
+            else:
+                pass
     return render(request, 'shop/tracker.html')
 
 def search(request):
