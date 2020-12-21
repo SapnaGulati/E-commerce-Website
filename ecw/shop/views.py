@@ -1,12 +1,9 @@
 from django.shortcuts import render
-from .models import Product, Contact, Orders
+from .models import Product, Contact, Orders, OrderUpdate
 from math import ceil
 
 # Create your views here.
 def index(request):
-    # products = Product.objects.all()
-    # n = len(products)
-    # nSlides = n//4 + ceil((n/4)-(n//4))
     allProds = []
     catprods = Product.objects.values('category', 'id')
     cats = {item['category'] for item in catprods}
@@ -15,8 +12,6 @@ def index(request):
         n = len(prod)
         nSlides = n//4 + ceil((n/4)-(n//4))
         allProds.append([prod, range(1, nSlides), nSlides])
-    # params = {'no_of_slides': nSlides, 'range': range(1,nSlides), 'product': products}
-    # allProds = [[products, range(1, nSlides), nSlides], [products, range(1, nSlides), nSlides]]
     params = {'allProds': allProds}
     return render(request, 'shop/index.html', params)
 
@@ -40,6 +35,7 @@ def search(request):
     return render(request, 'shop/search.html')
 
 def productView(request, myid):
+
     # Fetch the product using the id
     product = Product.objects.filter(id=myid)
     return render(request, 'shop/prodView.html', {'product':product[0]})
@@ -57,6 +53,8 @@ def checkout(request):
         zip_code = request.POST.get('zip_code', '')
         order = Orders(items_json=items_json, fname=fname, lname=lname, email=email, phone=phone, address=address, city=city, state=state, zip_code=zip_code)
         order.save()
+        update = OrderUpdate(order_id=order.order_id, update_desc="The order has been placed")
+        update.save()
         thank = True
         id = order.order_id
         return render(request, 'shop/checkout.html', {'thank':thank, 'id':id})

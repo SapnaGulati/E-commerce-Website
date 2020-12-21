@@ -4,14 +4,15 @@
 {% block body %}
 <div class="container">
     <div class="col my-4">
-        <h2>My Dream Cart Checkout - Track your orders</h2>
+        <h2>My Dream Cart Checkout - Enter your Order Id and Email address to Track your order</h2>
+
+    </div>
+    <div class="col my-4">
+        <h2>Step 2 - Enter Address & Other Details:</h2>
         <div class="my-4">
             <ul class="list-group" id="items">
             </ul>
         </div>
-    </div>
-    <div class="col my-4">
-        <h2>Step 2 - Enter Address & Other Details:</h2>
         <form class="row g-3" method="POST" action="/shop/tracker/">
           {% csrf_token %}
           <input type="hidden" name="itemsJson" id="itemsJson">
@@ -101,4 +102,4 @@
     document.location = "/shop";
     {% endif %}
   </script>
-{% endblock %}{% endblock %}
+{% endblock %}
