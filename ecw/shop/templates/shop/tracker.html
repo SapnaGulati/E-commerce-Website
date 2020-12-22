@@ -4,7 +4,7 @@
     <div class="col my-4">
         <h2>Enter your Order Id and Email address to Track your order</h2>
     </div>
-    <form class="row g-3" method="POST" action="/shop/tracker/">
+    <form class="row g-3" method="POST" id="trackerForm" action="/shop/tracker/">
         {% csrf_token %}
         <div class="col-md-6">
             <label for="validationDefault01" class="form-label">Order Id</label>
@@ -32,37 +32,23 @@
 </div>
 {% endblock %} {% block js %}
 <script>
-    if (localStorage.getItem('cart') == null) {
-        var cart = {};
-    }
-    else {
-        cart = JSON.parse(localStorage.getItem('cart'));
-    }
-    console.log(cart);
-    var sum = 0;
-    if ($.isEmptyObject(cart)) {
-        // if object is empty
-        mystr = '<p>Your cart is empty, please add some items to your cart before checking out!</p>'
-        $('#items').append(mystr);
-    }
-    else {
-        for (item in cart) {
-            let name = cart[item][1];
-            let qty = cart[item][0];
-            sum = sum + qty;
-            mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
-        ${name}
-        <span class="badge bg-primary rounded-pill">${qty}</span>
-        </li>`
-            $('#items').append(mystr);
-        }
-    }
-    document.getElementById('cart').innerHTML = sum;
-    $('#itemsJson').val(JSON.stringify(cart));
-    {% if thank %}
-    alert('Thank for ordering with us. Your order id is {{id}}. Use it to track your order using our order tracker');
-    localStorage.clear();
-    document.location = "/shop";
-    {% endif %}
+    $('#trackerForm').submit(function(event){
+        $('#items').empty();
+        var formData = {
+            'orderId': $('input[name=orderId]').val(),
+            'email': $('input[name=email]').val(),
+            'csrfmiddlewaretoken': $('input[name=csrfmiddlewaretoken]').val()
+        };
+        $.ajax({
+            type:'POST',
+            url:'/shop/tracker/',
+            data: formData,
+            encode: true
+        })
+        .done(function(data){
+            console.log(data)
+        });
+        event.preventDefault();
+    })
 </script>
 {% endblock %}
