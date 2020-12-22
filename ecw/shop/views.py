@@ -41,11 +41,11 @@ def tracker(request):
                 for item in update:
                     updates.append({'text': item.update_desc, 'time': item.timestamp})
                     response = json.dumps(updates, default=str)
-                    return HttpResponse(response)
+                return HttpResponse(response)
             else:
-                return HttpResponse('error')
+                return HttpResponse('{}')
         except Exception as e:
-            return HttpResponse('error')
+            return HttpResponse('{}')
     return render(request, 'shop/tracker.html')
 
 def search(request):
